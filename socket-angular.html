@@ -9,20 +9,35 @@
     
     <body ng-app="myApp" ng-controller="MyCtrl">
         <div class="container">
+            {{user}}
+            <input type="checkbox" ng-model="editMode">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Prénom</th>
                         <th>Nom</th>
                         <th>Email</th>
+                        <th>Selected By</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="contact in contacts">
-                        <td><input type="text" ng-model="contact.first_name" ng-change="sendUpdateToSocket(contact)"></td>                    
-                        <td><input type="text" ng-model="contact.last_name" ng-change="sendUpdateToSocket(contact)"></td>                    
-                        <td><input type="text" ng-model="contact.email" ng-change="sendUpdateToSocket(contact)"></td>                    
-                    </tr>
+                    <tr ng-repeat="contact in contacts" ng-click="selectContact(contact)">
+                        <td>
+                            <span ng-hide="editMode">{{contact.first_name}}</span>
+                            <input type="text" ng-show="editMode" ng-model="contact.first_name" ng-change="sendUpdateToSocket(contact)">
+                        </td>                    
+                        <td>
+                            <span ng-hide="editMode">{{contact.last_name}}</span>
+                            <input type="text" ng-show="editMode" ng-model="contact.last_name" ng-change="sendUpdateToSocket(contact)">
+                        </td>                    
+                        <td>
+                            <span ng-hide="editMode">{{contact.email}}</span>
+                            <input type="text" ng-show="editMode" ng-model="contact.email" ng-change="sendUpdateToSocket(contact)">
+                        </td>
+                        <td>
+                            <span ng-show="contact.selectedBy && contact.selectedBy.length > 0">{{contact.selectedBy}}</span>
+                        </td>      
+                    </tr>     
                 </tbody>
             </table>
         </div>

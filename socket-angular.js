@@ -9,8 +9,8 @@ var myApp = angular.module("myApp", [])
 function MyCtrl($scope) {
     'use strict';
     $scope.contacts = [];
+    $scope.selectedContacts = {};
     $scope.setContacts = function (contacts) {
-//        $scope.modifiedBySocket = true;
         $scope.contacts = contacts;
         $scope.$apply();
     }
@@ -26,6 +26,32 @@ function MyCtrl($scope) {
         contact = JSON.parse(angular.toJson(contact));
         socket.emit('modify contact', contact);
     }
+    $scope.selectContact = function (contact) {
+        var user = $scope.user;
+        if (contact.selectedBy) {
+            var index = contact.selectedBy.indexOf(user);
+            if ( index == -1) {
+                contact.selectedBy.push(user);   
+            }
+            else {
+                contact.selectedBy.splice(index,1);   
+            }
+            
+        }
+        else {
+            contact.selectedBy = [user];
+        }
+        $scope.sendUpdateToSocket(contact);
+    }
+    $scope.$watch('selectedContacts', function (a,b) {
+        
+    }, true);
+    
+    socket.on('login', function () {
+        $scope.user = prompt('Veuillez entrez votre nom :');
+        socket.emit('new user', $scope.user);
+    });
+    
     socket.on('initialize contacts', function (contacts) {
         $scope.setContacts(contacts);
     });
@@ -33,12 +59,6 @@ function MyCtrl($scope) {
     socket.on('update contact', function (contact) {
         $scope.updateContact(contact);
     });
-//    
-//    $scope.$watch('contacts', function() {
-//        if (!$scope.modifiedBySocket && $scope.contacts.length > 0) {
-//            var data = JSON.parse(angular.toJson($scope.contacts));
-//            socket.emit('modifying contacts', data);
-//        }
-//        else {$scope.modifiedBySocket = false}
-//    }, true);
+    
+//    socket.on
 }
