@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <title>Angular Socket.IO</title>
+    </head>
+    
+    <body ng-app="myApp" ng-controller="MyCtrl">
+        <div class="container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="contact in contacts">
+                        <td><input type="text" ng-model="contact.first_name" ng-change="sendUpdateToSocket(contact)"></td>                    
+                        <td><input type="text" ng-model="contact.last_name"></td>                    
+                        <td><input type="text" ng-model="contact.email"></td>                    
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+        <script src="socket-angular.js"></script>
+    </body>
+
+</html>

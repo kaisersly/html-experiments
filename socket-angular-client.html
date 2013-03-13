@@ -1,0 +1,10 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://localhost:3000');
+    var contacts = []
+    socket.on('initialize contacts', function(data) {
+        contacts = data;
+        contacts[0].first_name = 'Sly';
+        socket.emit('modifying contacts', contacts);
+    });
+</script>

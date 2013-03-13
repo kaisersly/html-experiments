@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <title>Draggable</title>
+    </head>
+    
+    <body ng-app="myApp" ng-controller="MyCtrl">
+        <div ng-repeat="item in items" draggable positioned>{{item.content}} (x:{{item.left}} / y:{{item.top}})</div>
+        <button ng-click="addItem()">add</button>
+        <button ng-click="log()">log scope</button>
+        <button ng-click="loadItemsFromScript()">load from script</button>
+        <input type="text" ng-model="storage_prefix" placeholder="storage prefix" />
+        <button ng-click="loadItemsFromLocalStorage()">load from storage</button>
+        <button ng-click="saveItemsToLocalStorage()">save to storage</button>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+        <script src="draggable.js"></script>
+    </body>
+
+</html>
