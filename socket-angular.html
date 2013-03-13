@@ -20,8 +20,8 @@
                 <tbody>
                     <tr ng-repeat="contact in contacts">
                         <td><input type="text" ng-model="contact.first_name" ng-change="sendUpdateToSocket(contact)"></td>                    
-                        <td><input type="text" ng-model="contact.last_name"></td>                    
-                        <td><input type="text" ng-model="contact.email"></td>                    
+                        <td><input type="text" ng-model="contact.last_name" ng-change="sendUpdateToSocket(contact)"></td>                    
+                        <td><input type="text" ng-model="contact.email" ng-change="sendUpdateToSocket(contact)"></td>                    
                     </tr>
                 </tbody>
             </table>
