@@ -26,10 +26,15 @@ io.sockets.on('connection', function (socket) {
         console.log(contacts);
         socket.broadcast.emit('update contact', contact);
     });
-    
+    socket.on('select contact', function (contactId) {
+        selectedContactIds[user] = contactId;
+        socket.broadcast.emit('selected contact', {user: user, contactId: contactId});
+    });
 });
 
 var users = [];
+
+var selectedContactIds = {};
 
 var contacts = [{
         id: 1,

@@ -23,7 +23,7 @@
                 <tbody>
                     <tr ng-repeat="contact in contacts" ng-click="selectContact(contact)">
                         <td>
-                            <span ng-hide="editMode">{{contact.first_name}}</span>
+                            <span contenteditable model="contact.first_name" callback="sendUpdateToSocket(contact)" ng-hide="editMode"></span>
                             <input type="text" ng-show="editMode" ng-model="contact.first_name" ng-change="sendUpdateToSocket(contact)">
                         </td>                    
                         <td>
@@ -35,7 +35,7 @@
                             <input type="text" ng-show="editMode" ng-model="contact.email" ng-change="sendUpdateToSocket(contact)">
                         </td>
                         <td>
-                            <span ng-show="contact.selectedBy && contact.selectedBy.length > 0">{{contact.selectedBy}}</span>
+                            <span>{{printSelectedBy(contact)}}</span>
                         </td>      
                     </tr>     
                 </tbody>

@@ -4,16 +4,31 @@
 var myApp = angular.module("myApp", [])
     , socket = io.connect('http://localhost:3000');
 
-
-
+myApp.directive('contenteditable', function ($parse) {
+    'use strict';
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            if (attrs.model) {
+                var model = $parse(attrs.model);
+                element.html(model(scope));
+                element.on('blur keyup change', function () {
+                    model.assign(scope, element.html());
+                    $parse(attrs.callback)(scope);
+                });
+            }
+        }
+    }
+});
 function MyCtrl($scope) {
     'use strict';
+    $scope.alerts = function (contact) {console.log(contact)}
     $scope.contacts = [];
-    $scope.selectedContacts = {};
+    $scope.selectedContactIds = {};
     $scope.setContacts = function (contacts) {
         $scope.contacts = contacts;
         $scope.$apply();
-    }
+    };
     $scope.updateContact = function (contact) {
         $scope.contacts.forEach(function (h,i) {
             if (h.id == contact.id) {
@@ -21,44 +36,41 @@ function MyCtrl($scope) {
                 $scope.$apply();
             }
         });
-    }
+    };
     $scope.sendUpdateToSocket = function (contact) {
         contact = JSON.parse(angular.toJson(contact));
         socket.emit('modify contact', contact);
-    }
+    };
     $scope.selectContact = function (contact) {
-        var user = $scope.user;
-        if (contact.selectedBy) {
-            var index = contact.selectedBy.indexOf(user);
-            if ( index == -1) {
-                contact.selectedBy.push(user);   
+        $scope.selectedContactIds[$scope.user] = contact.id;
+        socket.emit('select contact', contact.id);
+    };
+    $scope.printSelectedBy = function (contact) {
+        var text = '';
+        angular.forEach($scope.selectedContactIds, function (contactId, user) {
+            if (contactId == contact.id) {
+                text += user;
+                text += ' ';
             }
-            else {
-                contact.selectedBy.splice(index,1);   
-            }
-            
-        }
-        else {
-            contact.selectedBy = [user];
-        }
-        $scope.sendUpdateToSocket(contact);
+        });
+        return text;
     }
-    $scope.$watch('selectedContacts', function (a,b) {
-        
-    }, true);
+//    $scope.$watch('selectedContacts', function (a,b) {
+//        
+//    }, true);
     
     socket.on('login', function () {
         $scope.user = prompt('Veuillez entrez votre nom :');
         socket.emit('new user', $scope.user);
-    });
-    
+    });    
     socket.on('initialize contacts', function (contacts) {
         $scope.setContacts(contacts);
-    });
-    
+    });    
     socket.on('update contact', function (contact) {
         $scope.updateContact(contact);
     });
-    
-//    socket.on
+    socket.on('selected contact', function (data) {
+        $scope.selectedContactIds[data.user] = data.contactId;
+        $scope.$apply();
+    });
 }
