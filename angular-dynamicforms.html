@@ -22,8 +22,9 @@
                         <option value="text">Texte</option>
                         <option value="textarea">Texte long</option>
                         <option value="radio">Radio</option>
+                        <option value="checkbox">Checkboxes</option>
                     </select>
-                    <ul ng-show="newQuestion.answer.type == 'radio'">
+                    <ul ng-show="newQuestion.answer.type == 'radio' || newQuestion.answer.type == 'checkbox'">
                         <li ng-click="addOption()">(+)</li>
                         <li ng-repeat="option in newQuestion.answer.options">
                             <input type="text" ng-model="option.label">
@@ -44,6 +45,12 @@
                                         <div ng-switch-when="radio">
                                             <label class="radio inline" ng-repeat="option in question.answer.options">
                                                 <input type="radio" name="question_{{question.id}}" value="{{option.value}}" ng-model="question.answer.value">
+                                                {{option.label}}
+                                            </label>
+                                        </div>
+                                        <div ng-switch-when="checkbox">
+                                            <label class="checkbox" ng-repeat="option in question.answer.options">
+                                                <input type="checkbox" ng-true-value="{{option.value}}" ng-model="question.answer.options[$index].value">
                                                 {{option.label}}
                                             </label>
                                         </div>

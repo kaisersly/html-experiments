@@ -89,6 +89,16 @@ function MyCtrl($scope) {
                     value: question.answer.value
                 }
             }
+            if (question.answer.type == "checkbox") {
+//                var options = [];
+//                question.answer.options.forEach(function (option) {
+//                    options.push(option.value);
+//                });
+//                answer.answer.value = options;
+//                    options.push(option.value);
+//                });
+                answer.options = question.answer.options;
+            }
             answers.push(answer);
         });
         $scope.answers = answers
