@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+        <script src="angular-switchable.js"></script>
+        <title>Switchable</title>
+    </head>
+    
+    <body ng-app="myApp" ng-controller="MyCtrl">
+        <input type="button" ng-click="editMode=!editMode" value="edit mode">
+        <div ng-repeat="article in articles">
+            <h3 ng-hide="editMode">{{article.title}}</h3>
+            <input type="text" ng-model="article.title" ng-show="editMode" ng-click="editMode = !editMode">
+            <p ng-hide="editMode">{{article.content}}</p>
+            <textarea ng-model="article.content" ng-show="editMode"></textarea>
+        </div>
+    </body>
+
+</html>

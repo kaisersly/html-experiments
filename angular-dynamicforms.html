@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+    
+    <head>
+        <meta charset="UTF-8">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js"></script>
+        <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+        <script src="angular-dynamicforms.js"></script>
+        <title>Dynamic Forms</title>
+    </head>
+    
+    <body ng-app="myApp" ng-controller="MyCtrl">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span4">
+                    <h3 ng-click="debugQuestions = !debugQuestions">Questions</h3>
+                    <input type="text" ng-model="newQuestion.label">
+                    <select ng-model="newQuestion.answer.type">
+                        <option value="text">Texte</option>
+                        <option value="textarea">Texte long</option>
+                        <option value="radio">Radio</option>
+                    </select>
+                    <ul ng-show="newQuestion.answer.type == 'radio'">
+                        <li ng-click="addOption()">(+)</li>
+                        <li ng-repeat="option in newQuestion.answer.options">
+                            <input type="text" ng-model="option.label">
+                            <input type="text" ng-model="option.value">
+                        </li>
+                    </ul>
+                    <input type="submit" ng-click="addQuestion()">
+                    <pre ng-show="debugQuestions">{{model.questions | json}}</pre>
+                </div>
+                <div class="span4">
+                    <h3>Formulaire</h3>
+                    <ol>
+                        <li ng-repeat="question in model.questions">{{question.label}}
+                            <ul>
+                                <li>
+                                    <div ng-switch="question.answer.type">
+                                        <input type="text" ng-switch-when="text" ng-model="question.answer.value">
+                                        <div ng-switch-when="radio">
+                                            <label class="radio inline" ng-repeat="option in question.answer.options">
+                                                <input type="radio" name="question_{{question.id}}" value="{{option.value}}" ng-model="question.answer.value">
+                                                {{option.label}}
+                                            </label>
+                                        </div>
+                                        <textarea ng-switch-when="textarea" ng-model="question.answer.value"></textarea>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                <div class="span4">
+                    <h3 ng-click="debugAnswers = !debugAnswers">Réponses</h3>
+                    <pre ng-show="!debugAnswers">{{answers | json}}</pre>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

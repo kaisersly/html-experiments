@@ -6,14 +6,19 @@ var myApp = angular.module("myApp", [])
 
 myApp.directive('contenteditable', function ($parse) {
     'use strict';
+    // TODO : essayer avec scope: {model: "="}
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
             if (attrs.model) {
+                // parse pour évaluer l'expression
                 var model = $parse(attrs.model);
+                // évalue l'expression dans le contexte du scope
                 element.html(model(scope));
                 element.on('blur keyup change', function () {
+                    // met à jour la valeur du model
                     model.assign(scope, element.html());
+                    // évalue le callback dans le contexte du scope
                     $parse(attrs.callback)(scope);
                 });
             }
