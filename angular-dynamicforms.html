@@ -17,8 +17,8 @@
             <div class="row-fluid">
                 <div class="span4">
                     <h3 ng-click="debugQuestions = !debugQuestions">Questions</h3>
-                    <input type="text" ng-model="newQuestion.label">
-                    <select ng-model="newQuestion.answer.type">
+                    <input type="text" ng-model="newQuestion.label" placeholder="questionLabel">
+                    <select ng-model="newQuestion.answer.type" ng-change="setDefaultOptions()">
                         <option value="text">Texte</option>
                         <option value="textarea">Texte long</option>
                         <option value="radio">Radio</option>
@@ -27,8 +27,8 @@
                     <ul ng-show="newQuestion.answer.type == 'radio' || newQuestion.answer.type == 'checkbox'">
                         <li ng-click="addOption()">(+)</li>
                         <li ng-repeat="option in newQuestion.answer.options">
-                            <input type="text" ng-model="option.label">
-                            <input type="text" ng-model="option.value">
+                            <input type="text" ng-model="option.label" placeholder="optionLabel">
+                            <input type="text" ng-model="option.value" ng-hide="newQuestion.answer.type == 'checkbox'" placeholder="optionValue">
                         </li>
                     </ul>
                     <input type="submit" ng-click="addQuestion()">
@@ -41,7 +41,7 @@
                             <ul>
                                 <li>
                                     <div ng-switch="question.answer.type">
-                                        <input type="text" ng-switch-when="text" ng-model="question.answer.value" validate="question.answer.validate">
+                                        <input type="text" ng-switch-when="text" ng-model="question.answer.value" validate="question.answer.validate" my-directive>
                                         <div ng-switch-when="radio">
                                             <label class="radio inline" ng-repeat="option in question.answer.options">
                                                 <input type="radio" name="question_{{question.id}}" value="{{option.value}}" ng-model="question.answer.value">
@@ -50,9 +50,10 @@
                                         </div>
                                         <div ng-switch-when="checkbox">
                                             <label class="checkbox" ng-repeat="option in question.answer.options">
-                                                <input type="checkbox" ng-true-value="{{option.value}}" ng-model="question.answer.options[$index].value">
+                                                <input type="checkbox" ng-true-value="{{option.value}}" ng-model="question.answer.options[$index].value" ng-change="buildCheckboxAnswer(question)">
                                                 {{option.label}}
                                             </label>
+                                            <input ng-list ng-model="question.answer.value" ng-change="setCheckboxAnswers(question)">
                                         </div>
                                         <textarea ng-switch-when="textarea" ng-model="question.answer.value"></textarea>
                                     </div>

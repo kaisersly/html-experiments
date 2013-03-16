@@ -7,12 +7,19 @@ function log(text) {
     console.log(text)
 };
 
+myApp.directive('myDirective', function () {
+    return {
+        require: "?ngModel",
+        link: function (scope, el, attrs, ngModel) {
+            ngModel.$setValidity("test",false);
+        }
+    }
+});
 myApp.directive('scopeLogger', function ($parse) {
     return function (scope, el, attrs) {
         log(scope);
         if (attrs.scopeLogger != '') {
             var logValue = $parse(attrs.scopeLogger)(scope);
-            log(logValue);
         }
     }
 });
@@ -23,8 +30,31 @@ myApp.directive('validate', function ($parse) {
         if (validate.required) {
             el.attr("required", "");   
         }
+        if (validate.not) {
+            var notHash = validate.not;
+            var notScope = $parse(notHash.scope)(scope);
+            
+            notScope.forEach(function (h) {
+                if (h.id == notHash.id) {
+                    var hScope = scope.$new();
+                    $.extend(hScope,h);
+                    hScope.$watch(notHash.field, function(a, b) {
+                        var value = $parse(attrs.ngModel)(scope);
+                        var notField = $parse(notHash.field)(hScope);
+                        if (value && value != '' && notField == notHash.value) { 
+                            log(value); 
+                        } 
+                    });
+                }
+            }); 
+        }
     }
 });
+
+
+
+/* ---------------------------------------------------------------- Controller ---------------------------------------------------------------- */
+
 function MyCtrl($scope) {
     'use strict';
     var lastId = 3;
@@ -33,9 +63,7 @@ function MyCtrl($scope) {
             label: "Une autre question ...",
             answer: {
                 type: "text",
-                options: [
-                    {label: "oui", value: true}, {label: "non", value: false}    
-                ]
+                options: [{label:'o',value:true}]
             }
         }
     }
@@ -50,8 +78,35 @@ function MyCtrl($scope) {
         $scope.model.questions.push($scope.newQuestion);
         $scope.newQuestion = emptyQuestion();
     }
-    $scope.addOption = function () {
-        $scope.newQuestion.answer.options.push({label: "", value: ""});   
+    $scope.addOption = function (option) {
+        option = option || {label: "", value: ""};
+        $scope.newQuestion.answer.options.push(option);   
+    }
+    $scope.setDefaultOptions = function () {
+        var question = $scope.newQuestion;
+        var type = question.answer.type;
+        question.answer.options = [];
+        if (type == 'radio') {
+            $scope.addOption({ label: 'Oui', value: true });   
+            $scope.addOption({ label: 'Non', value: false });   
+        }
+        if (type == 'checkbox') {
+            $scope.addOption({ label: '', value: false });   
+        }
+        
+    }
+    $scope.buildCheckboxAnswer = function (question) {
+        var value = [];
+        question.answer.options.forEach(function (option) {
+            if (option.value) { value.push(option.label) }
+        });
+        question.answer.value = value;
+    }
+    $scope.setCheckboxAnswers = function (question) {
+        var value = question.answer.value;
+        question.answer.options.forEach(function (option) {
+            option.value = value.indexOf(option.label) == -1 ? false : true
+        });
     }
     $scope.model = {
         questions: [
@@ -61,7 +116,13 @@ function MyCtrl($scope) {
                 answer: {
                     type: "text",
                     validate: {
-                        required: true
+                        required: false,
+                        not: {
+                            scope: "model.questions",
+                            id: "question2",
+                            field: "answer.value",
+                            value: "au"
+                        }
                     }
                 }
             },
@@ -70,6 +131,7 @@ function MyCtrl($scope) {
                 label: "Quel est votre sexe ?",
                 answer: {
                     type: "radio",
+                    value: "f",
                     options: [
                         {
                             label: "Masculin",
@@ -78,14 +140,37 @@ function MyCtrl($scope) {
                         {
                             label: "Féminin",
                             value: "f"
+                        },
+                        {
+                            label: "Autre",
+                            value: "au"
                         }
                     ]
                 }
             },
             {
                 id: "question3",
+                label: "Quelles sont vos passions ?",
+                answer: {
+                    type: "checkbox",
+                    options: [
+                        {
+                            label: "Montagne"
+                        },
+                        {
+                            label: "Randonnée"
+                        },
+                        {
+                            label: "Plage"
+                        }
+                    ]
+                }
+            },
+            {
+                id: "question4",
                 label: "Donnez vos impressions ...",
                 answer: {
+                    value: "blablabla",
                     type: "textarea"
                 }
             }
@@ -100,16 +185,9 @@ function MyCtrl($scope) {
                     value: question.answer.value
                 }
             }
-            if (question.answer.type == "checkbox") {
-//                var options = [];
-//                question.answer.options.forEach(function (option) {
-//                    options.push(option.value);
-//                });
-//                answer.answer.value = options;
-//                    options.push(option.value);
-//                });
-                answer.options = question.answer.options;
-            }
+//            if (question.answer.type == "checkbox") {
+//                answer.options = question.answer.options;
+//            }
             answers.push(answer);
         });
         $scope.answers = answers
