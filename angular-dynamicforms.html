@@ -41,7 +41,7 @@
                             <ul>
                                 <li>
                                     <div ng-switch="question.answer.type">
-                                        <input type="text" ng-switch-when="text" ng-model="question.answer.value">
+                                        <input type="text" ng-switch-when="text" ng-model="question.answer.value" validate="question.answer.validate">
                                         <div ng-switch-when="radio">
                                             <label class="radio inline" ng-repeat="option in question.answer.options">
                                                 <input type="radio" name="question_{{question.id}}" value="{{option.value}}" ng-model="question.answer.value">

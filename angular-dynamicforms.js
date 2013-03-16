@@ -16,7 +16,15 @@ myApp.directive('scopeLogger', function ($parse) {
         }
     }
 });
-
+myApp.directive('validate', function ($parse) {
+    return function (scope, el, attrs) {
+        var validate = $parse(attrs.validate)(scope);
+        if (!validate) { return false }
+        if (validate.required) {
+            el.attr("required", "");   
+        }
+    }
+});
 function MyCtrl($scope) {
     'use strict';
     var lastId = 3;
@@ -51,7 +59,10 @@ function MyCtrl($scope) {
                 id: "question1",
                 label: "Quel est votre nom ?",
                 answer: {
-                    type: "text"
+                    type: "text",
+                    validate: {
+                        required: true
+                    }
                 }
             },
             {
