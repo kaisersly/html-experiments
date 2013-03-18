@@ -34,11 +34,11 @@
                     <input type="submit" ng-click="addQuestion()">
                     <pre ng-show="debugQuestions">{{model.questions | json}}</pre>
                 </div>
-                <div class="span4">
+                <div class="span8">
                     <h3>Formulaire</h3>
                     <ol>
                         <li ng-repeat="question in model.questions">{{question.label}}
-                            <ul>
+                            <ul class="unstyled">
                                 <li>
                                     <div ng-switch="question.answer.type">
                                         <input type="text" ng-switch-when="text" ng-model="question.answer.value" validate="question.answer.validate" my-directive>
@@ -62,9 +62,9 @@
                         </li>
                     </ol>
                 </div>
-                <div class="span4">
+                <div class="span4" style="position: absolute; top: 0; right: 0">
                     <h3 ng-click="debugAnswers = !debugAnswers">Réponses</h3>
-                    <pre ng-show="!debugAnswers">{{answers | json}}</pre>
+                    <pre ng-show="debugAnswers">{{answers | json}}</pre>
                 </div>
             </div>
         </div>

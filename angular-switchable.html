@@ -20,6 +20,8 @@
             <p ng-hide="editMode">{{article.content}}</p>
             <textarea ng-model="article.content" ng-show="editMode"></textarea>
         </div>
+        <div ng-bind-html-unsafe="articles[0].content">
+        </div>
     </body>
 
 </html>

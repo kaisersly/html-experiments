@@ -116,7 +116,7 @@ function MyCtrl($scope) {
                 answer: {
                     type: "text",
                     validate: {
-                        required: false,
+                        required: true,
                         not: {
                             scope: "model.questions",
                             id: "question2",
